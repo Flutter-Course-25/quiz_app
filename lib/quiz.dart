@@ -9,7 +9,7 @@ class Quiz extends StatefulWidget {
   State<Quiz> createState() {
     return _QuizState();
   }
-}
+} 
  
 class _QuizState extends State<Quiz> {
   Widget? activeScreen;
@@ -24,7 +24,7 @@ class _QuizState extends State<Quiz> {
   }
 
   void switchScreen() {
-    setState(() {
+    setState(() { //takes function as a value
       activeScreen = const QuestionsScreen();
     });
   }
