@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/data/questions.dart';
 import 'package:quiz_app/questions_screen.dart';
+import 'package:quiz_app/results_screen.dart';
 import 'package:quiz_app/start_screen.dart';
 
 class Quiz extends StatefulWidget {
@@ -9,10 +11,11 @@ class Quiz extends StatefulWidget {
   State<Quiz> createState() {
     return _QuizState();
   }
-} 
- 
+}
+
 class _QuizState extends State<Quiz> {
-  Widget? activeScreen;
+  var activeScreen = 'start-screen';
+  List<String> selectedAnswers = [];
 
   @override
   //Executed by Flutter when the StatefulWidget's State object is initialized
@@ -20,17 +23,38 @@ class _QuizState extends State<Quiz> {
     //called after the object was created
     //add all initialization methods, will never excute thereafter again
     super.initState();
-    activeScreen = StartScreen(switchScreen); //
+    //activeScreen = StartScreen(switchScreen);
+    activeScreen = 'start-screen';
   }
 
   void switchScreen() {
-    setState(() { //takes function as a value
-      activeScreen = const QuestionsScreen();
+    setState(() {
+      //takes function as a value
+      activeScreen = 'questions-screen';
     });
+  }
+
+  void chooseAnswer(String answer) {
+    selectedAnswers.add(answer);
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        activeScreen = 'results-screen';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget screenWidget = StartScreen(switchScreen);
+    if (activeScreen == 'questions-screen') {
+      screenWidget = QuestionsScreen(
+        onSelectAnswer: chooseAnswer,
+      );
+    }
+    else if (activeScreen == 'results-screen') {  
+      screenWidget = ResultsScreen(chosenAnswers: selectedAnswers,);
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -45,7 +69,7 @@ class _QuizState extends State<Quiz> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: activeScreen,
+          child: screenWidget,
         ),
       ),
     );
